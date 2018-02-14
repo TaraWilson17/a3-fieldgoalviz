@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A3 Visualization</title>
+
+    <!-- Libraries -->
+    <!-- jQuery -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+    <!-- D3 -->
+    <script src="https://d3js.org/d3.v4.js"></script>
+
+    <!-- Bootstrap, ignore for the tutorial -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+    <!-- main.css -->
+    <link rel="stylesheet" href="css/index.css" />
+
+    <!-- index.js -->
+    <script src="js/index.js"></script>
+</head>
+
+<body class="font-weight-bold">
+    <div class="jumbotron jumbotron-fluid bg-success pt-1 pb-2">
+        <div class="container row">
+            <!--<img src="/img/header.jpg" alt="football field" class="col header-img"/>-->
+            <div class="col">
+                <h1 class="display-4">Field Goals</h1>
+                <p class="lead">All the field goals kicked in the 2017 NFL season. Data from <a href="NFLsavant.com" class="text-dark">NFL Savant</a>.</p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div id="plot" class="col"></div>
+        <div id="filters" class="col">
+            <div id="legend"></div>
+            <h4>Filtering Conditions</h4>
+            <select id="selectform">
+                <option value="all">All</option>
+                <option value="ARI">Cardinals</option>
+                <option value="ATL">Falcons</option>
+                <option value="BAL">Ravens</option>
+                <option value="BUF">Bills</option>
+                <option value="CAR">Panthers</option>
+                <option value="CHI">Bears</option>
+                <option value="CIN">Bengals</option>
+                <option value="CLE">Browns</option>
+                <option value="DAL">Cowboys</option>
+                <option value="DEN">Broncos</option>
+                <option value="DET">Lions</option>
+                <option value="GB">Packers</option>
+                <option value="HOU">Texans</option>
+                <option value="IND">Colts</option>
+                <option value="JAX">Jaguars</option>
+                <option value="KC">Chiefs</option>
+                <option value="LA">Rams</option>
+                <option value="LAC">Chargers</option>
+                <option value="MIA">Dolphins</option>
+                <option value="MIN">Vikings</option>
+                <option value="NE">Patriots</option>
+                <option value="NO">Saints</option>
+                <option value="NYG">Giants</option>
+                <option value="NYJ">Jets</option>
+                <option value="OAK">Raiders</option>
+                <option value="PHI">Eagles</option>
+                <option value="PIT">Steelers</option>
+                <option value="SEA">Seahawks</option>
+                <option value="SF">49ers</option>
+                <option value="TB">Buccaneers</option>
+                <option value="TEN">Titans</option>
+                <option value="WAS">Redskins</option>
+            </select>
+            <p></p>
+            <div id="yards" class="slider-range"></div>
+            <label for="yardsToGo">Yards to Go Range:</label>
+            <input type="text" id="yardsToGo" readonly style="border:0; color:green; font-weight:bold;">
+        </div>
+    </div>
+</body>
+
+</html>

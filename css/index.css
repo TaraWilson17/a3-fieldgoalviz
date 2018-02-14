@@ -1,0 +1,14 @@
+.tooltip {
+    background-color: white;
+    border: 1px solid black;
+    font-weight: bold;
+}
+
+.header-img {
+    height: 150px;
+    width: 10px;
+}
+
+#legend {
+    border: 1px solid black;
+}
