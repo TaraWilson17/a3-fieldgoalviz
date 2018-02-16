@@ -5,8 +5,8 @@
 }
 
 .header-img {
-    height: 150px;
-    width: 10px;
+    width: 15%;
+    height: 20%;
 }
 
 #legend {
@@ -27,5 +27,9 @@
 
 #plot svg {
     height: 550px;
+}
+
+label {
+    font-size: 20px;
 }
 

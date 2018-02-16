@@ -25,10 +25,10 @@
     <script src="js/index.js"></script>
 </head>
 
-<body class="">
+<body>
     <div class="jumbotron jumbotron-fluid bg-success pt-1 pb-2">
         <div class="container row">
-            <!--<img src="/img/header.jpg" alt="football field" class="col header-img"/>-->
+            <img src="/img/header.png" alt="football" class="col header-img"/>
             <div class="col">
                 <h1 class="display-4">Field Goals</h1>
                 <p class="lead">All the field goals kicked in the 2017 NFL season. Data from <a href="NFLsavant.com" class="text-dark">NFL Savant</a>.</p>
@@ -40,6 +40,12 @@
         <div id="filters" class="col">
             <h4>Legend:</h4>
             <div id="legend"></div>
+            <br />
+            <h4>Analysis:</h4>
+            <div class="m-1">
+                <label class="radio-inline mr-4 ml-4"><input type="radio" name="optradio" id="zoom" checked>Zoom</label>
+                <label class="radio-inline"><input type="radio" name="optradio" id="tooltip">Tooltips</label>
+            </div>
             <br />
             <h4>Filtering Conditions:</h4>
             <br />

@@ -6,6 +6,15 @@ $(function() {
     let currData;
     let currValues = [0, 30];
 
+
+    document.querySelector("#zoom").addEventListener("click", function() {
+        document.querySelector(".zoom").style.pointerEvents = "all";
+    });
+
+    document.querySelector("#tooltip").addEventListener("click", function() {
+        document.querySelector(".zoom").style.pointerEvents = "none";
+    });
+
     var margin = {top: 20, right: 20, bottom: 110, left: 40},
         margin2 = {top: 430, right: 20, bottom: 30, left: 40}
         width = 960 - margin.left - margin.right,
@@ -42,7 +51,7 @@ $(function() {
 
     svg = d3.select("#plot").append("svg")
         .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
+        .attr("height", height + margin.top + margin.bottom);
     
     // Add label to the x-axis
     svg.append("text")             
@@ -51,15 +60,15 @@ $(function() {
         .attr("font-weight", "bold")
         .text("Time of Game");
     
-    // Add label to the y-axis
-    svg.append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 0 - margin.left)
-        .attr("x", 0 - (height / 2))
-        .attr("dy", "1em")
-        .attr("font-weight", "bold")
-        .style("text-anchor", "middle")
-        .text("Field Position");
+    // // Add label to the y-axis //MIGHT WANT THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+    // svg.append("text")
+    //     .attr("transform", "rotate(-90)")
+    //     .attr("y", 0 - margin.left)
+    //     .attr("x", )
+    //     .attr("dy", "1em")
+    //     .attr("font-weight", "bold")
+    //     .style("text-anchor", "middle")
+    //     .text("Field Position");
 
     let brush = d3.brushX()
         .extent([[0,0], [width, height2]])
@@ -71,17 +80,17 @@ $(function() {
         .extent([[0,0], [width, height]])
         .on("zoom", zoomed);
 
-    let area = d3.area()
-        .curve(d3.curveMonotoneX)
-        .x(function(d) {return x(d.Time); })
-        .y0(height)
-        .y1(function(d) { return y(d.YardLineFixed); });
+    // let area = d3.area()
+    //     .curve(d3.curveMonotoneX)
+    //     .x(function(d) {return x(d.Time); })
+    //     .y0(height)
+    //     .y1(function(d) { return y(d.YardLineFixed); });
     
-    let area2 = d3.area()
-        .curve(d3.curveMonotoneX)
-        .x(function(d) {return x2(d.Time); })
-        .y0(height2)
-        .y1(function(d) {return y2(d.YardLineFixed); });
+    // let area2 = d3.area()
+    //     .curve(d3.curveMonotoneX)
+    //     .x(function(d) {return x2(d.Time); })
+    //     .y0(height2)
+    //     .y1(function(d) {return y2(d.YardLineFixed); });
     
     //////////////////////
     svg.append("defs").append("clipPath")
@@ -91,11 +100,22 @@ $(function() {
             .attr("height", height);
     
     let focus = svg.append("g")
-        .attr("class", "focus");
+        .attr("class", "focus")
+        .attr("width", width - 800)
+        .attr("transform", "translate(40,0)");
+
+    focus.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x",0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .attr("font-weight", "bold")
+        .text("Field Position"); 
 
     let context = svg.append("g")
         .attr("class", "context")
-        .attr("transform", "translate(" + (margin2.left - 40) + "," + (margin2.top - 20) + ")");
+        .attr("transform", "translate(40,410)");
 
     d3.csv("data/FG.csv", function (error, data) {
         if (error) throw error;
@@ -115,25 +135,26 @@ $(function() {
         focus.append("path")
             .datum(data)
             .attr("class", "area")
-            .attr("d", area);
+            //.attr("d", area);
         
         focus.append("g")
             .attr("class", "axis axis--x")
-            .attr("transform", "translate(40," + height + ")")
+            .attr("transform", "translate(0," + (height + 4) + ")")
             .call(xAxis);
         
         focus.append("g")
             .attr("class", "axis axis--y")
+            .attr("transform", "translate(0,4)")
             .call(yAxis);
         
         context.append("path")
             .datum(data)
             .attr("class", "area")
-            .attr("d", area2)
+            //.attr("d", area2)
         
         context.append("g")
             .attr("class", "axis axis--x")
-            .attr("transform", "translate(0,38)")
+            .attr("transform", "translate(10,42)")
             .call(xAxis2);
         
         context.append("g")
@@ -143,16 +164,16 @@ $(function() {
 
         svg.append("rect")
             .attr("class", "zoom")
-            .attr("width", width)
+            .attr("width", (width - 100))
             .attr("height", height)
-            .attr("transform", "translate(0,40)")
+            .attr("transform", "translate(40,40)")
             .call(zoom);
     });
 
     // Add a title to the visual
     svg.append("text")
         .attr("x", (width / 2))             
-        .attr("y", 0)
+        .attr("y", 17)
         .attr("font-weight", "bold")
         .attr("text-anchor", "middle")  
         .style("font-size", "24px") 
@@ -276,6 +297,7 @@ $(function() {
             filterYards(currValues);
             currTeam = this.value;
         }
+        
     }
     
     function filterType(type) {
@@ -302,10 +324,9 @@ $(function() {
 
     function brushed() {
         if(d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return;
-        console.log("brushed");
         let selected = d3.event.selection || x2.range();
         x.domain(selected.map(x2.invert, x2));
-        focus.select(".area").attr("d", area);
+        //focus.select(".area").attr("d", area);
         svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
             .scale(width / (selected[1] - selected[0]))
             .translate(-selected[0], 0));
@@ -317,20 +338,16 @@ $(function() {
 
     function zoomed() {
         if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return;
-        console.log("zoomed");
         let transform = d3.event.transform;
         x.domain(transform.rescaleX(x2).domain());
-        focus.select(".area").attr("d", area);
+        //focus.select(".area").attr("d", area);
         focus.select(".axis--x").call(xAxis);
         context.select(".brush").call(brush.move, x.range().map(transform.invertX, transform));
         context.select(".brush").call(brush);
         focus.selectAll(".point")
             .attr("cx", function(d) {return x(d.Time); })
             .attr("cy", function(d) {return y(d.YardLineFixed); })
-        //context.select(".brush").call(brush.move, x.range());
     }
-
-
 
     function drawLegend() {
         let legend = d3.select("#legend").append("svg");
@@ -361,6 +378,5 @@ $(function() {
             .attr("font-size", "20px")
             .text("Missed Field Goal")
     }
-
 
 })
