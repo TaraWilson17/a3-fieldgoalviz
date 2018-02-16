@@ -10,5 +10,13 @@
 }
 
 #legend {
-    border: 1px solid black;
+    width: 230px;
+    height: 70px;
 }
+
+.zoom {
+    cursor:move;
+    fill: none;
+    pointer-events: all;
+}
+

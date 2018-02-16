@@ -25,7 +25,7 @@
     <script src="js/index.js"></script>
 </head>
 
-<body class="font-weight-bold">
+<body class="">
     <div class="jumbotron jumbotron-fluid bg-success pt-1 pb-2">
         <div class="container row">
             <!--<img src="/img/header.jpg" alt="football field" class="col header-img"/>-->
@@ -38,8 +38,11 @@
     <div class="row">
         <div id="plot" class="col"></div>
         <div id="filters" class="col">
+            <h4>Legend:</h4>
             <div id="legend"></div>
-            <h4>Filtering Conditions</h4>
+            <br />
+            <h4>Filtering Conditions:</h4>
+            <br />
             <select id="selectform">
                 <option value="all">All</option>
                 <option value="ARI">Cardinals</option>
@@ -75,9 +78,11 @@
                 <option value="TEN">Titans</option>
                 <option value="WAS">Redskins</option>
             </select>
+            <br />
             <p></p>
-            <div id="yards" class="slider-range"></div>
-            <label for="yardsToGo">Yards to Go Range:</label>
+            <br />
+            <div id="yards" class="slider-range mb-2"></div>
+            <label for="yardsToGo" class="text-center">Yards to Go Range:</label>
             <input type="text" id="yardsToGo" readonly style="border:0; color:green; font-weight:bold;">
         </div>
     </div>
