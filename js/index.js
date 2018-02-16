@@ -30,28 +30,22 @@ $(function() {
     let xAxis2 = d3.axisBottom(x2).tickFormat(d3.timeFormat("%M:%S"));
     let yAxis = d3.axisLeft(y);
 
-    ////////////////////////////////////////////////////////////////////
     var yScale = d3.scaleLinear().range([0, height]);
     var xScale = d3.scaleTime().range([0, width]);
 
     //setup x
     var xValue = function (d) { return d.Time; }, // data -> value
         xMap = function (d) { return xScale(xValue(d)); }, // data -> display
-        x2Map = function (d) { return x2(xValue(d)); };
+        x2Map = function (d) { return xScale(xValue(d)); };
 
     // setup y
     var yValue = function (d) { return d.YardLineFixed; }, // data -> value
         yMap = function (d) { return yScale(yValue(d)); },
         y2Map = function (d) { return y2(yValue(d)); }; // data -> display
 
-    xScale.domain([parseTime("00:00"), parseTime("60:60")]);
+    xScale.domain([parseTime("00:00"), parseTime("59:59")]);
     
     yScale.domain([50, 0]);
-
-    // Add x axis
-    svg.append("g")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(xScale).tickFormat(d3.timeFormat("%M:%S")));
     
     // Add label to the x-axis
     svg.append("text")             
@@ -83,7 +77,22 @@ $(function() {
         .translateExtent([[0,0], [width, height]])
         .extent([[0,0], [width, height]])
         .on("zoom", zoomed);
+
+    ///////////////////////////////////
+    let area = d3.area()
+        .curve(d3.curveMonotoneX)
+        .x(function(d) {return x(d.Time); })
+        .y0(height)
+        .y1(function(d) { return y(d.YardLineFixed); });
     
+    /////////////////////////////////
+    let area2 = d3.area()
+        .curve(d3.curveMonotoneX)
+        .x(function(d) {return x2(d.Time); })
+        .y0(height2)
+        .y1(function(d) {return y2(d.YardLineFixed); });
+    
+    //////////////////////
     svg.append("defs").append("clipPath")
             .attr("id", "clip")
         .append("rect")
@@ -91,29 +100,12 @@ $(function() {
             .attr("height", height);
     
     let focus = svg.append("g")
-        .attr("class", "context");
-    
+        .attr("class", "focus");
+        /// TRANSLATE LINE HERE??????????
+
     let context = svg.append("g")
         .attr("class", "context")
-        .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
-    
-    let area = d3.area()
-        .x(function(d) {return x(d.Time); })
-        .y0(height)
-        .y1(function(d) { return y(d.YardLineFixed); });
-    
-    let area2 = d3.area()
-        .x(function(d) {return x2(d.Time); })
-        .y0(height2)
-        .y1(function(d) {return y2(d.YardLineFixed); });
-
-    // //setup x
-    // var xValue = function (d) { return d.Time; }, // data -> value
-    //     xMap = function (d) { return xScale(xValue(d)); }; // data -> display
-
-    // // setup y
-    // var yValue = function (d) { return d.YardLineFixed; }, // data -> value
-    //     yMap = function (d) { return yScale(yValue(d)); }; // data -> display
+        .attr("transform", "translate(" + (margin2.left - 40) + "," + (margin2.top - 20) + ")");
 
     d3.csv("data/FG.csv", function (error, data) {
         if (error) throw error;
@@ -129,6 +121,42 @@ $(function() {
         dataset = data;
         currData = data;
         drawVis(data);
+
+        ///////////////////////////////////////////
+        focus.append("path")
+            .datum(data)
+            .attr("class", "area")
+            .attr("d", area);
+        
+        focus.append("g")
+            .attr("class", "axis axis--x")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+        
+        focus.append("g")
+            .attr("class", "axis axis--y")
+            .call(yAxis);
+        
+        context.append("path")
+            .datum(data)
+            .attr("class", "area")
+            .attr("d", area2)
+        
+        context.append("g")
+            .attr("class", "axis axis--x")
+            .attr("transform", "translate(0,38)")
+            .call(xAxis2);
+        
+        context.append("g")
+            .attr("class", "brush")
+            .call(brush)
+            .call(brush.move, x.range());
+
+        svg.append("rect")
+            .attr("class", "zoom")
+            .attr("width", width)
+            .attr("height", height)
+            .call(zoom);
     });
 
     // Add a title to the visual
@@ -161,38 +189,10 @@ $(function() {
 
     function drawVis(data) {
 
-    // // don't want dots overlapping axis, so add in buffer to data domain
-    //x.domain(d3.extent(data, function(d) { return d.Time}));
-    //x.domain([parseTime("00:00"), parseTime("60:60")]);
-    
-    // //yScale.domain([50, d3.min(data, yValue) - 1]);
-    // //yScale.domain([50, 0]);
-
         x.domain([parseTime("00:00"), parseTime("59:60")]);
         y.domain([0, 50]);
         x2.domain(x.domain());
         y2.domain(y.domain());
-
-        context.append("circle")
-            .data(data)
-            .attr("color", "red")
-            .attr("d", area2)
-        
-        context.append("g")
-            .attr("class", "axis axis--x")
-            .attr("transform", "translate(0," + (height2 - 10) + ")")
-            .call(xAxis2);
-        
-        context.append("g")
-            .attr("class", "brush")
-            .call(brush)
-            .call(brush.move, x.range());
-        
-        svg.append("rect")
-            .attr("class", "zoom")
-            .attr("width", width)
-            .attr("height", height)
-            .call(zoom);
 
         //set up tooltip
         var div = d3.select("body")
@@ -248,7 +248,6 @@ $(function() {
                 }
             })
 
-        /////////////////////////////////////////////////////
         let contextPts = context.selectAll(".point")
             .data(data)
         
@@ -276,9 +275,7 @@ $(function() {
                 } else {
                     return "green";
                 }
-            })
-        /////////////////////////////////////////////////////
-    
+            })    
     
         document.querySelector("#selectform").onchange = function() {
             filterType(this.value);
@@ -314,7 +311,7 @@ $(function() {
         let selected = d3.event.selection || x2.range();
         x.domain(selected.map(x2.invert, x2));
         focus.select(".area").attr("d", area);
-        //focus.select(".axis--x").call(xAxis);
+        focus.select(".axis--x").call(xAxis);
         svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
             .scale(width / (selected[1] - selected[0]))
             .translate(-selected[0], 0));
@@ -324,7 +321,7 @@ $(function() {
         if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return;
         let transform = d3.event.transform;
         x.domain(transform.rescaleX(x2).domain());
-        focus.select(".area").attr("d", area); //MIGHT HAVE TO FIX FOCUS!!!!!
+        focus.select(".area").attr("d", area);
         focus.select(".axis--x").call(xAxis);
         context.select(".brush").call(brush.move, x.range().map(transform.invertX, transform));
     }

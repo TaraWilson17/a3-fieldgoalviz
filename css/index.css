@@ -20,3 +20,12 @@
     pointer-events: all;
 }
 
+.area {
+    fill: none;
+    clip-path: url(#clip);
+}
+
+#plot svg {
+    height: 550px;
+}
+
