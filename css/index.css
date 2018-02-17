@@ -4,9 +4,8 @@
     font-weight: bold;
 }
 
-.header-img {
-    width: 15%;
-    height: 20%;
+#img-container {
+    width: 140px;
 }
 
 #legend {
